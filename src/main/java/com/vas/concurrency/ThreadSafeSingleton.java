@@ -7,9 +7,11 @@ public class ThreadSafeSingleton {
         System.out.println("ThreadSafeSingleton instance created");
     }
 
-    public static synchronized ThreadSafeSingleton getInstance() {
+    public static ThreadSafeSingleton getInstance() {
         if (instance == null) {
-            instance = new ThreadSafeSingleton();
+            synchronized (ThreadSafeSingleton.class) {
+                instance = new ThreadSafeSingleton();
+            }
         }
         return instance;
     }
