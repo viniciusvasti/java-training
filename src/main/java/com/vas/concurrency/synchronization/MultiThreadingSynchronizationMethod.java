@@ -1,6 +1,6 @@
-package com.vas.concurrency;
+package com.vas.concurrency.synchronization;
 
-public class MultiThreadingSynchronizationBlock {
+public class MultiThreadingSynchronizationMethod {
     public static void main(String[] args) {
         Stack stack = new Stack(5);
         // Here we could have an issue if we don't use synchronization in the push and
@@ -21,47 +21,42 @@ public class MultiThreadingSynchronizationBlock {
     static class Stack {
         private int[] stack;
         private int top;
-        private Object lock = new Object();
 
         public Stack(int size) {
             stack = new int[size];
             top = -1;
         }
 
-        public boolean push(int value) {
+        // Here the lock is on the object instance (Stack object). So, only one thread
+        // can execute this, or any other method assigned with "synchronized" at a time.
+        public synchronized boolean push(int value) {
             if (isFull()) {
                 return false;
             }
-            // The synchronized block is used to lock the block of code that needs to be
-            // synchronized. Avoiding pushing and popping at the same time.
-            synchronized (lock) {
-                ++top;
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stack[top] = value;
+            ++top;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            stack[top] = value;
             return true;
         }
 
-        public int pop() {
+        // This method is also synchronized, so only one thread can execute this, or any
+        // other method assigned with "synchronized" at a time.
+        public synchronized int pop() {
             if (isEmpty()) {
                 return Integer.MIN_VALUE;
             }
-            // The same lock object is used to lock the block of code that needs to be
-            // synchronized. Avoiding pushing and popping at the same time.
-            synchronized (lock) {
-                int value = stack[top];
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                top--;
-                return value;
+            int value = stack[top];
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            top--;
+            return value;
         }
 
         public boolean isEmpty() {

@@ -1,4 +1,6 @@
-package com.vas.concurrency;
+package com.vas.concurrency.threads;
+
+import com.vas.concurrency.Utils;
 
 public class MultiThreadingDaemonThread {
     public static void main(String[] args) {

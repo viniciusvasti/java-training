@@ -1,4 +1,6 @@
-package com.vas.concurrency;
+package com.vas.concurrency.threads;
+
+import com.vas.concurrency.Utils;
 
 public class MultiThreadingExtending {
     // The drawback of this approach is that we can't extend any other class

@@ -1,4 +1,6 @@
-package com.vas.concurrency;
+package com.vas.concurrency.threads;
+
+import com.vas.concurrency.Utils;
 
 public class MultiThreadingRunnable {
     // Although more code is needed, this approach is more flexible because we can

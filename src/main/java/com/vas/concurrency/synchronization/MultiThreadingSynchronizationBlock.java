@@ -1,11 +1,10 @@
-package com.vas.concurrency;
+package com.vas.concurrency.synchronization;
 
-public class MultiThreadingSynchronizationIndependentLocks {
+public class MultiThreadingSynchronizationBlock {
     public static void main(String[] args) {
         Stack stack = new Stack(5);
-        // Here we WILL have an issue if we don't use synchronization in the push and
-        // pop methods because one thread could be popping while the other is pushing
-        // but
+        // Here we could have an issue if we don't use synchronization in the push and
+        // pop methods because one thread could be popping while the other is pushing but
         // the top pointer is not updated yet.
         new Thread(() -> {
             for (int i = 0; i < 10; i++) {
@@ -22,21 +21,20 @@ public class MultiThreadingSynchronizationIndependentLocks {
     static class Stack {
         private int[] stack;
         private int top;
-        private Object pushLock = new Object();
-        private Object popLock = new Object();
+        private Object lock = new Object();
 
         public Stack(int size) {
             stack = new int[size];
             top = -1;
         }
 
-        // Here the lock is on the object instance (Stack object). So, only one thread
-        // can execute this, or any other method assigned with "synchronized" at a time.
         public boolean push(int value) {
             if (isFull()) {
                 return false;
             }
-            synchronized (pushLock) {
+            // The synchronized block is used to lock the block of code that needs to be
+            // synchronized. Avoiding pushing and popping at the same time.
+            synchronized (lock) {
                 ++top;
                 try {
                     Thread.sleep(1000);
@@ -48,13 +46,13 @@ public class MultiThreadingSynchronizationIndependentLocks {
             return true;
         }
 
-        // This method is also synchronized, so only one thread can execute this, or any
-        // other method assigned with "synchronized" at a time.
         public int pop() {
             if (isEmpty()) {
                 return Integer.MIN_VALUE;
             }
-            synchronized (popLock) {
+            // The same lock object is used to lock the block of code that needs to be
+            // synchronized. Avoiding pushing and popping at the same time.
+            synchronized (lock) {
                 int value = stack[top];
                 try {
                     Thread.sleep(1000);

@@ -1,10 +1,11 @@
-package com.vas.concurrency;
+package com.vas.concurrency.synchronization;
 
-public class MultiThreadingSynchronizationMethod {
+public class MultiThreadingSynchronizationIndependentLocks {
     public static void main(String[] args) {
         Stack stack = new Stack(5);
-        // Here we could have an issue if we don't use synchronization in the push and
-        // pop methods because one thread could be popping while the other is pushing but
+        // Here we WILL have an issue if we don't use synchronization in the push and
+        // pop methods because one thread could be popping while the other is pushing
+        // but
         // the top pointer is not updated yet.
         new Thread(() -> {
             for (int i = 0; i < 10; i++) {
@@ -21,6 +22,8 @@ public class MultiThreadingSynchronizationMethod {
     static class Stack {
         private int[] stack;
         private int top;
+        private Object pushLock = new Object();
+        private Object popLock = new Object();
 
         public Stack(int size) {
             stack = new int[size];
@@ -29,34 +32,38 @@ public class MultiThreadingSynchronizationMethod {
 
         // Here the lock is on the object instance (Stack object). So, only one thread
         // can execute this, or any other method assigned with "synchronized" at a time.
-        public synchronized boolean push(int value) {
+        public boolean push(int value) {
             if (isFull()) {
                 return false;
             }
-            ++top;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (pushLock) {
+                ++top;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                stack[top] = value;
             }
-            stack[top] = value;
             return true;
         }
 
         // This method is also synchronized, so only one thread can execute this, or any
         // other method assigned with "synchronized" at a time.
-        public synchronized int pop() {
+        public int pop() {
             if (isEmpty()) {
                 return Integer.MIN_VALUE;
             }
-            int value = stack[top];
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (popLock) {
+                int value = stack[top];
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                top--;
+                return value;
             }
-            top--;
-            return value;
         }
 
         public boolean isEmpty() {

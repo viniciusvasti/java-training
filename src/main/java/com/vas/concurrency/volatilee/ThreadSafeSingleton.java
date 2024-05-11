@@ -1,7 +1,7 @@
-package com.vas.concurrency;
+package com.vas.concurrency.volatilee;
 
 public class ThreadSafeSingleton {
-    private static ThreadSafeSingleton instance;
+    private static volatile ThreadSafeSingleton instance;
 
     private ThreadSafeSingleton() {
         System.out.println("ThreadSafeSingleton instance created");

@@ -1,4 +1,4 @@
-package com.vas.concurrency;
+package com.vas.concurrency.synchronization;
 
 public class MultiThreadingSynchronizationMissing {
     public static void main(String[] args) {
